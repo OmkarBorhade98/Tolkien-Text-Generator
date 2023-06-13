@@ -10,11 +10,12 @@ ids_from_chars = tf.keras.layers.StringLookup(vocabulary =list(vocab))
 chars_from_ids = tf.keras.layers.StringLookup(
     vocabulary= list(vocab), 
     invert = True
-    )
+)
 
 # Get Text from ids
 def text_from_ids(ids):
     return tf.strings.reduce_join(
         chars_from_ids(ids), 
         axis=-1
-        )
+    )
+
