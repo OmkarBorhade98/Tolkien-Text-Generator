@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-class MyModel(tf.keras.sequencial):
+class MyModel(tf.keras.Sequential):
     """
     Constructor
     vocab_size = no of unique characters in dataset
@@ -8,7 +8,7 @@ class MyModel(tf.keras.sequencial):
     rnn_nodes_list = list of rnn nodes in each layer
     """
     def __init__(self, vocab_size, embeding_dim, rnn_layer_node_list):
-        super.__init__()
+        super().__init__()
         # Adding Embeding Layer
         # Turns positive integers (indexes) into dense vectors of fixed size.
         self.add(tf.keras.layers.Embedding(
