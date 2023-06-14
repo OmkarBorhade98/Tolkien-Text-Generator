@@ -17,6 +17,7 @@ all_ids = vectorization.ids_from_chars(
 
 # 
 ids_datasets = tf.data.Dataset.from_tensor_slices(all_ids)
+print("ids_dataset shape:", tf.shape(ids_datasets))
 
 seq_length = 100
 examples_per_epoch = len(dataset_text) // (seq_length + 1)
@@ -28,6 +29,8 @@ sequences = ids_datasets.batch(
 
 # Creating Target and Test Datasets
 dataset = sequences.map(split_input_target)
+print("dataset shape:", dataset.numpy().shape())
+
 
 # Creating Batch Dataset
 BATCH_SIZE = 512
@@ -38,19 +41,19 @@ dataset = (
         drop_remainder = True
     ).
     prefetch(
-        tf.data.Experimental.AUTOTUNE
+        tf.data.experimental.AUTOTUNE
     )
 )
 
-embedding_dim = 256
+embeding_dim = 256
 rnn_layer_node_list = [512, 512, 512]
 
 model = build_model.MyModel(
     vocab_size = vectorization.ids_from_chars.vocabulary_size(),
-    embedding_dim = embedding_dim,
+    embeding_dim = embeding_dim,
     rnn_layer_node_list = rnn_layer_node_list
 )
 
-#Print Model Summary
+#Print Model Summarypython trai9n
 model.summary()
 
