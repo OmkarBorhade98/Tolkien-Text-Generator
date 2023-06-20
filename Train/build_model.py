@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-class MyModel(tf.keras.Sequential):
+class MyModel(tf.keras.Model):
     """
     Constructor
     vocab_size = no of unique characters in dataset
@@ -11,18 +11,30 @@ class MyModel(tf.keras.Sequential):
         super().__init__()
         # Adding Embeding Layer
         # Turns positive integers (indexes) into dense vectors of fixed size.
-        self.add(tf.keras.layers.Embedding(
+        self.embedding = tf.keras.layers.Embedding(
             input_dim = vocab_size, 
             output_dim = embeding_dim
-        ))
+        )
         # Adding GRU Layers
-        for index, units in enumerate(rnn_layer_node_list):
-            self.add(tf.keras.layers.GRU(
+        self.gru = []
+        for units in rnn_layer_node_list:
+            self.gru.append(tf.keras.layers.GRU(
                 units = units,
                 return_sequences= True,
                 return_state= True
             ))
         # Adding Dense Layer
-        self.add(tf.keras.layers.Dense(512))
-        self.add(tf.keras.layers.Dense(vocab_size))
-            
+        self.dense = tf.keras.layers.Dense(vocab_size)
+
+    def call(self, inputs, states=None, return_state=False, training = False):
+        x= inputs
+        x= self.embedding(x, training = training)
+        for index, gru_layer in enumerate(self.gru):
+            if states is None:
+                states = self.gru[index].get_initial_state(x)
+            x, states = self.gru[index](x, initial_state =states, training =training)
+        x = self.dense(x, training = training)
+        if return_state:
+            return x, states
+        else:
+            return x
